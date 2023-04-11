@@ -25,7 +25,7 @@ function TodoListApp() {
   //POST-----------------------------------
   const addTask = (e) => {
     e.preventDefault();
-    const inputTask = document.getElementById("task.input");
+    const inputTask = document.getElementById("task-input");
 
     fetch("https://assets.breatheco.de/apis/fake/todos/user/teamgeekuser", {
       method: "POST",
@@ -182,7 +182,7 @@ function TodoListApp() {
             onChange={updateText}
             value={inputText}
             type="text"
-            id="task.input"
+            id="task-input"
             placeholder="No tasks, Add a task!"
           />
           <button
