@@ -1,25 +1,28 @@
 import React from "react";
-
+import TodoListApp from "./TodoListApp.jsx"
 //include images into your bundle
 import rigoImage from "../../img/rigo-baby.jpg";
 
 //create your first component
-const Home = () => {
+const Home =({ listOfTasks, onDelete }) => {
 	return (
+		<>
 		<div className="text-center">
-			<h1 className="text-center mt-5">Hello Rigo!</h1>
-			<p>
-				<img src={rigoImage} />
-			</p>
-			<a href="#" className="btn btn-success">
-				If you see this green button... bootstrap is working...
-			</a>
-			<p>
-				Made by{" "}
-				<a href="http://www.4geeksacademy.com">4Geeks Academy</a>, with
-				love!
-			</p>
+            <TodoListApp/>
+		{/* {listOfTasks.length === 0 ? (
+                <p>No pending tasks</p>
+            ) : (
+                listOfTasks.map((task, i) => (
+                    <div className="app-li mx-auto" key={i}>
+                        {task.text}
+                        <button id={task.id} className="app-li-delete" onClick={() => onDelete(task.id)}>
+                            &#10006;
+                        </button>
+                    </div>
+                ))
+            )} */}
 		</div>
+		</>
 	);
 };
 
