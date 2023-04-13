@@ -203,7 +203,7 @@ function TodoListApp() {
   return (
     <div>
       <nav>
-        <button className="home-button btn btn-secondary">Some button</button>
+        {/* <button className="home-button btn btn-secondary">Some button</button> */}
       </nav>
       <main>
         <h1>To Do List</h1>
