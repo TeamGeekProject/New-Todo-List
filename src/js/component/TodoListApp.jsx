@@ -15,6 +15,10 @@ function TodoListApp() {
   ///////////////////////Miguel////////////////////////////
 
   const [user, setUser] = useState("");
+  const [createUserSucces, setCreateUserSucces] = useState(false);
+  const [deleteUserSucces, setDeleteUserSucces] = useState(false);
+  const [sentUser, setSentUser] = useState(false);
+  const [sentDelete, setSentDelete] = useState(false);
   /////////////////////////////////////////////////////////
 
   //GET---
@@ -173,31 +177,44 @@ function TodoListApp() {
     console.log(items);
   };
 
-  const createUser = (newUser) => {
-    fetch(`http://assets.breatheco.de/apis/fake/todos/user/${newUser}`, {
-      method: "POST",
-      body: JSON.stringify([]),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => console.log("Success"))
-      .catch((error) => {
-        console.log("Error");
-      });
+  const createUser = async (newUser) => {
+    setSentUser(true);
+    let userResponse = await fetch(
+      `http://assets.breatheco.de/apis/fake/todos/user/${newUser}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify([]),
+      }
+    );
+
+    if (userResponse.ok) {
+      setCreateUserSucces(true);
+    } else {
+      setCreateUserSucces(false);
+    }
   };
 
-  const deleteUser = (newUser) => {
-    fetch(`http://assets.breatheco.de/apis/fake/todos/user/${newUser}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => console.log("Success"))
-      .catch((error) => {
-        console.log("Error");
-      });
+  const deleteUser = async (newUser) => {
+    setSentDelete(true);
+
+    let deleteResponse = await fetch(
+      `http://assets.breatheco.de/apis/fake/todos/user/${newUser}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (deleteResponse.ok) {
+      setDeleteUserSucces(true);
+    } else {
+      setDeleteUserSucces(false);
+    }
   };
 
   return (
@@ -246,6 +263,20 @@ function TodoListApp() {
           Create User
         </button>
 
+        {sentUser && (
+          <div>
+            {createUserSucces ? (
+              <div className="alert alert-success" role="alert">
+                User created successfully!
+              </div>
+            ) : (
+              <div className="alert alert-danger" role="alert">
+                User not created!
+              </div>
+            )}
+          </div>
+        )}
+
         <br />
 
         <button
@@ -256,6 +287,20 @@ function TodoListApp() {
         >
           Delete User
         </button>
+
+        {sentDelete && (
+          <div>
+            {deleteUserSucces ? (
+              <div className="alert alert-success" role="alert">
+                User deleted successfully!
+              </div>
+            ) : (
+              <div className="alert alert-danger" role="alert">
+                User not deleted!
+              </div>
+            )}
+          </div>
+        )}
       </main>
       <footer>
         <p>Made with ❤️ by 4Geeks Team</p>
