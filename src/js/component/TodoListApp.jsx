@@ -12,15 +12,20 @@ function TodoListApp() {
   const [erase, setErase] = useState();
   const [newUser, setnewUser] = useState();
 
+  ///////////////////////Miguel////////////////////////////
+
+  const [user, setUser] = useState("");
+  /////////////////////////////////////////////////////////
+
   //GET---
 
-  useEffect(()=>{
-      fetch("https://assets.breatheco.de/apis/fake/todos/user/teamgeekuser")
-      .then (response=>response.json())
-      .then (data=>{
-          setTasks(data);
+  useEffect(() => {
+    fetch("https://assets.breatheco.de/apis/fake/todos/user/teamgeekuser")
+      .then((response) => response.json())
+      .then((data) => {
+        setTasks(data);
       });
-  },[]);
+  }, []);
 
   //POST-----------------------------------
   const addTask = (e) => {
@@ -118,7 +123,6 @@ function TodoListApp() {
 
   //DELETE-----------------------------------------------------------------------
 
-
   useEffect(() => {
     if (erase) {
       let newArray = items.filter((element) => element.id != erase);
@@ -140,8 +144,8 @@ function TodoListApp() {
               headers: {
                 "Content-Type": "application/json",
               },
-            }
-          [setnewUser],)
+            }[setnewUser]
+          );
         }
         return res;
       })
@@ -169,6 +173,33 @@ function TodoListApp() {
     console.log(items);
   };
 
+  const createUser = (newUser) => {
+    fetch(`http://assets.breatheco.de/apis/fake/todos/user/${newUser}`, {
+      method: "POST",
+      body: JSON.stringify([]),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => console.log("Success"))
+      .catch((error) => {
+        console.log("Error");
+      });
+  };
+
+  const deleteUser = (newUser) => {
+    fetch(`http://assets.breatheco.de/apis/fake/todos/user/${newUser}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => console.log("Success"))
+      .catch((error) => {
+        console.log("Error");
+      });
+  };
+
   return (
     <div>
       <nav>
@@ -176,7 +207,7 @@ function TodoListApp() {
       </nav>
       <main>
         <h1>To Do List</h1>
-        <form onSubmit={addTask}>
+        {/* <form onSubmit={addTask}>
           <input
             className="app-input"
             onChange={updateText}
@@ -192,11 +223,38 @@ function TodoListApp() {
           >
             <i className="fas fa-plus" />
           </button>
-        </form>
+        </form> */}
         {/* <Home listOfTasks={items} onDelete={setErase} /> */}
-        <input className="app-input" placeholder="New User..." />
+        {/* <input className="app-input" placeholder="New User..." />
         <button className="btn btn-danger" onClick={handleOpenUser}>
           Load User
+        </button> */}
+
+        <input
+          className="app-input"
+          placeholder="New User..."
+          onChange={(e) => setUser(e.target.value)}
+        />
+        <div>{"user:" + user}</div>
+
+        <button
+          className="btn btn-danger"
+          onClick={(e) => {
+            createUser(user);
+          }}
+        >
+          Create User
+        </button>
+
+        <br />
+
+        <button
+          className="btn btn-danger mt-1"
+          onClick={(e) => {
+            deleteUser(user);
+          }}
+        >
+          Delete User
         </button>
       </main>
       <footer>
