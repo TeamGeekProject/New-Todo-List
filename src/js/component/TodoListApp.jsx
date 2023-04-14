@@ -24,34 +24,39 @@ function TodoListApp() {
   //GET---
 
   useEffect(() => {
-    fetch("https://assets.breatheco.de/apis/fake/todos/user/teamgeekuser")
+    fetch(`https://assets.breatheco.de/apis/fake/todos/user/teamgeekuser`)
       .then((response) => response.json())
       .then((data) => {
         setTasks(data);
+      })
+      .catch((error) => {
+        console.log("Error");
       });
   }, []);
 
-  //POST-----------------------------------
-  const addTask = (e) => {
-    e.preventDefault();
-    const inputTask = document.getElementById("task-input");
+  console.log(tasks);
 
-    fetch("https://assets.breatheco.de/apis/fake/todos/user/teamgeekuser", {
-      method: "POST",
-      headers: {
-        "Content-Type": "applocation/json",
-      },
-      body: JSON.stringify({
-        task: inputTask.value,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        const newTasks = [...tasks, data];
-        setTasks(newTasks);
-        inputTask.value = "";
-      });
-  };
+  //POST-----------------------------------
+  // const addTask = (e) => {
+  //   e.preventDefault();
+  //   const inputTask = document.getElementById("task-input");
+
+  //   fetch("https://assets.breatheco.de/apis/fake/todos/user/teamgeekuser", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "applocation/json",
+  //     },
+  //     body: JSON.stringify({
+  //       task: inputTask.value,
+  //     }),
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       const newTasks = [...tasks, data];
+  //       setTasks(newTasks);
+  //       inputTask.value = "";
+  //     });
+  // };
 
   //DELETE----------------------------------
 
@@ -104,78 +109,78 @@ function TodoListApp() {
 
   //PUT---
 
-  useEffect(() => {
-    if (!items.length) return;
-    fetch("https://assets.breatheco.de/apis/fake/todos/user/teamgeekuser", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(items),
-    })
-      .then((resp) => {
-        return resp.json();
-      })
-      .then((data) => {
-        console.log("SUCCESS");
-      })
+  // useEffect(() => {
+  //   if (!items.length) return;
+  //   fetch("https://assets.breatheco.de/apis/fake/todos/user/teamgeekuser", {
+  //     method: "PUT",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(items),
+  //   })
+  //     .then((resp) => {
+  //       return resp.json();
+  //     })
+  //     .then((data) => {
+  //       console.log("SUCCESS");
+  //     })
 
-      .catch((err) => {
-        console.log("Error");
-      });
-  }, [items]);
+  //     .catch((err) => {
+  //       console.log("Error");
+  //     });
+  // }, [items]);
 
   //DELETE-----------------------------------------------------------------------
 
-  useEffect(() => {
-    if (erase) {
-      let newArray = items.filter((element) => element.id != erase);
-      setItems(newArray);
-    }
-  });
+  // useEffect(() => {
+  //   if (erase) {
+  //     let newArray = items.filter((element) => element.id != erase);
+  //     setItems(newArray);
+  //   }
+  // });
 
   //POST ADD NEWUSER-----------------------------------------------------------------
 
-  const handleOpenUser = () => {
-    fetch("https://assets.breatheco.de/apis/fake/todos/user/${newUser}")
-      .then((res) => {
-        if (!res.ok) {
-          return fetch(
-            "https://assets.breatheco.de/apis/fake/todos/user/${newUser}",
-            {
-              method: "POST",
-              body: JSON.stringify(newUser),
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }[setnewUser]
-          );
-        }
-        return res;
-      })
-      .then((res) => res.json())
-      .then((data) => setItems(data))
-      .catch((error) => {
-        console.log("error");
-      });
-  };
+  // const handleOpenUser = () => {
+  //   fetch("https://assets.breatheco.de/apis/fake/todos/user/${newUser}")
+  //     .then((res) => {
+  //       if (!res.ok) {
+  //         return fetch(
+  //           "https://assets.breatheco.de/apis/fake/todos/user/${newUser}",
+  //           {
+  //             method: "POST",
+  //             body: JSON.stringify(newUser),
+  //             headers: {
+  //               "Content-Type": "application/json",
+  //             },
+  //           }[setnewUser]
+  //         );
+  //       }
+  //       return res;
+  //     })
+  //     .then((res) => res.json())
+  //     .then((data) => setItems(data))
+  //     .catch((error) => {
+  //       console.log("error");
+  //     });
+  // };
 
-  const updateText = (e) => {
-    setInputText(e.target.value);
-  };
-  const handleNewTask = (e) => {
-    e.preventDefault();
-    if (inputText.trim() == " ") return;
-    const newItem = {
-      text: `${inputText}`,
-      // label: "Add a Task",
-      done: false,
-      id: (Math.random() * 20).toFixed(1),
-    };
-    setItems([...items, newItem]);
-    setInputText(" ");
-    console.log(items);
-  };
+  // const updateText = (e) => {
+  //   setInputText(e.target.value);
+  // };
+  // const handleNewTask = (e) => {
+  //   e.preventDefault();
+  //   if (inputText.trim() == " ") return;
+  //   const newItem = {
+  //     text: `${inputText}`,
+  //     // label: "Add a Task",
+  //     done: false,
+  //     id: (Math.random() * 20).toFixed(1),
+  //   };
+  //   setItems([...items, newItem]);
+  //   setInputText(" ");
+  //   console.log(items);
+  // };
 
   const createUser = async (newUser) => {
     setSentUser(true);
@@ -220,10 +225,27 @@ function TodoListApp() {
   return (
     <div>
       <nav>
-        {/* <button className="home-button btn btn-secondary">Some button</button> */}
+        <button className="home-button btn btn-secondary">Some button</button>
       </nav>
       <main>
         <h1>To Do List</h1>
+
+        {tasks.length === 0 ? (
+          <p>No pending tasks</p>
+        ) : (
+          tasks.map((task, i) => (
+            <div className="app-li mx-auto" key={i}>
+              {task.label}
+              <button
+                id={task.id}
+                className="app-li-delete"
+                // onClick={() => onDelete(task.id)}
+              >
+                &#10006;
+              </button>
+            </div>
+          ))
+        )}
         {/* <form onSubmit={addTask}>
           <input
             className="app-input"
@@ -241,7 +263,7 @@ function TodoListApp() {
             <i className="fas fa-plus" />
           </button>
         </form> */}
-        {/* <Home listOfTasks={items} onDelete={setErase} /> */}
+        {/* <Home listOfTasks={tasks} /> */}
         {/* <input className="app-input" placeholder="New User..." />
         <button className="btn btn-danger" onClick={handleOpenUser}>
           Load User
