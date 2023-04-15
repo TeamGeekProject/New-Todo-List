@@ -21,7 +21,7 @@ function TodoListApp() {
   const [sentDelete, setSentDelete] = useState(false);
   /////////////////////////////////////////////////////////
 
-  //GET---
+  ///////////////////////Miguel////////////////////////////
 
   useEffect(() => {
     fetch("https://assets.breatheco.de/apis/fake/todos/user/teamgeekuser")
@@ -50,8 +50,33 @@ function TodoListApp() {
         const newTasks = [...tasks, data];
         setTasks(newTasks);
         inputTask.value = " ";
+
       });
-  };
+  }, []);
+
+  console.log(tasks);
+
+  //POST-----------------------------------
+  // const addTask = (e) => {
+  //   e.preventDefault();
+  //   const inputTask = document.getElementById("task-input");
+
+  //   fetch("https://assets.breatheco.de/apis/fake/todos/user/teamgeekuser", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "applocation/json",
+  //     },
+  //     body: JSON.stringify({
+  //       task: inputTask.value,
+  //     }),
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       const newTasks = [...tasks, data];
+  //       setTasks(newTasks);
+  //       inputTask.value = "";
+  //     });
+  // };
 
   //DELETE----------------------------------
 
@@ -104,28 +129,29 @@ function TodoListApp() {
 
   //PUT---
 
-  useEffect(() => {
-    if (!items.length) return;
-    fetch("https://assets.breatheco.de/apis/fake/todos/user/teamgeekuser", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(items),
-    })
-      .then((resp) => {
-        return resp.json();
-      })
-      .then((data) => {
-        console.log("SUCCESS");
-      })
+  // useEffect(() => {
+  //   if (!items.length) return;
+  //   fetch("https://assets.breatheco.de/apis/fake/todos/user/teamgeekuser", {
+  //     method: "PUT",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(items),
+  //   })
+  //     .then((resp) => {
+  //       return resp.json();
+  //     })
+  //     .then((data) => {
+  //       console.log("SUCCESS");
+  //     })
 
-      .catch((err) => {
-        console.log("Error");
-      });
-  }, [items]);
+  //     .catch((err) => {
+  //       console.log("Error");
+  //     });
+  // }, [items]);
 
   //DELETE-----------------------------------------------------------------------
+
 
   useEffect(() => {
     if (erase) {
@@ -133,6 +159,7 @@ function TodoListApp() {
       setItems(newArray);
     }
   });
+
 
   //POST ADD NEWUSER-----------------------------------------------------------------
 
@@ -160,8 +187,24 @@ function TodoListApp() {
   //     });
   // };
 
-  const updateText = (e) => {
-    setInputText(e.target.value);
+  const createUser = async (newUser) => {
+    setSentUser(true);
+    let userResponse = await fetch(
+      `http://assets.breatheco.de/apis/fake/todos/user/${newUser}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify([]),
+      }
+    );
+
+    if (userResponse.ok) {
+      setCreateUserSucces(true);
+    } else {
+      setCreateUserSucces(false);
+    }
   };
   const handleNewTask = (e) => {
     e.preventDefault();
@@ -175,6 +218,7 @@ function TodoListApp() {
     setItems([...items, newItem]);
     setInputText(" ");
     console.log(items);
+
   };
 
   const createUser = async (newUser) => {
@@ -225,7 +269,24 @@ function TodoListApp() {
       </nav>
       <main>
         <h1>To Do List</h1>
-        <form onSubmit={addTask}>
+
+        {tasks.length === 0 ? (
+          <p>No pending tasks</p>
+        ) : (
+          tasks.map((task, i) => (
+            <div className="app-li mx-auto" key={i}>
+              {task.label}
+              <button
+                id={task.id}
+                className="app-li-delete"
+                // onClick={() => onDelete(task.id)}
+              >
+                &#10006;
+              </button>
+            </div>
+          ))
+        )}
+        {/* <form onSubmit={addTask}>
           <input
             className="app-input"
             onChange={updateText}
@@ -241,8 +302,10 @@ function TodoListApp() {
           >
             <i className="fas fa-plus" />
           </button>
+
         </form>
         {/* <Home listOfTasks={items} onDelete={setErase} /> */}
+
         {/* <input className="app-input" placeholder="New User..." />
         <button className="btn btn-danger" onClick={handleOpenUser}>
           Load User
@@ -251,9 +314,11 @@ function TodoListApp() {
         <input
           className="app-input"
           placeholder="New User..."
+
           onChange={(e) => {
             setUser(e.target.value);
           }}
+
         />
         <div>{"user:" + user}</div>
 
@@ -270,11 +335,13 @@ function TodoListApp() {
           <div>
             {createUserSucces ? (
               <div className="alert alert-success" role="alert">
+
                 User Succesfully Created!
               </div>
             ) : (
               <div className="alert alert-danger" role="alert">
                 User not created! User Name Already in Use!
+
               </div>
             )}
           </div>
@@ -299,8 +366,10 @@ function TodoListApp() {
               </div>
             ) : (
               <div className="alert alert-danger" role="alert">
+
                 User not deleted or Unexsistant User Id (User has already been
                 deleted!)
+
               </div>
             )}
           </div>
