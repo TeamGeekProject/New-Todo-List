@@ -7,10 +7,10 @@ function TodoListApp() {
   //   // job:"Teacher"
   // };
   const [tasks, setTasks] = useState([]);
-  const [inputText, setInputText] = useState("");
+  const [inputText, setInputText] = useState(" ");
   const [items, setItems] = useState([]);
   const [erase, setErase] = useState();
-  const [newUser, setnewUser] = useState();
+  //const [newUser, setnewUser] = useState();
 
   ///////////////////////Miguel////////////////////////////
 
@@ -21,16 +21,36 @@ function TodoListApp() {
   const [sentDelete, setSentDelete] = useState(false);
   /////////////////////////////////////////////////////////
 
-  //GET---
+  ///////////////////////Miguel////////////////////////////
 
   useEffect(() => {
-    fetch(`https://assets.breatheco.de/apis/fake/todos/user/teamgeekuser`)
+    fetch("https://assets.breatheco.de/apis/fake/todos/user/teamgeekuser")
       .then((response) => response.json())
       .then((data) => {
         setTasks(data);
-      })
-      .catch((error) => {
-        console.log("Error");
+      });
+  }, []);
+
+  //POST-----------------------------------
+  const addTask = (e) => {
+    e.preventDefault();
+    const inputTask = document.getElementById("task-input");
+
+    fetch("https://assets.breatheco.de/apis/fake/todos/user/teamgeekuser", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        task: inputTask.value,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const newTasks = [...tasks, data];
+        setTasks(newTasks);
+        inputTask.value = " ";
+
       });
   }, []);
 
@@ -132,12 +152,14 @@ function TodoListApp() {
 
   //DELETE-----------------------------------------------------------------------
 
-  // useEffect(() => {
-  //   if (erase) {
-  //     let newArray = items.filter((element) => element.id != erase);
-  //     setItems(newArray);
-  //   }
-  // });
+
+  useEffect(() => {
+    if (erase) {
+      let newArray = items.filter((element) => element.id != erase);
+      setItems(newArray);
+    }
+  });
+
 
   //POST ADD NEWUSER-----------------------------------------------------------------
 
@@ -165,27 +187,44 @@ function TodoListApp() {
   //     });
   // };
 
-  // const updateText = (e) => {
-  //   setInputText(e.target.value);
-  // };
-  // const handleNewTask = (e) => {
-  //   e.preventDefault();
-  //   if (inputText.trim() == " ") return;
-  //   const newItem = {
-  //     text: `${inputText}`,
-  //     // label: "Add a Task",
-  //     done: false,
-  //     id: (Math.random() * 20).toFixed(1),
-  //   };
-  //   setItems([...items, newItem]);
-  //   setInputText(" ");
-  //   console.log(items);
-  // };
-
   const createUser = async (newUser) => {
     setSentUser(true);
     let userResponse = await fetch(
       `http://assets.breatheco.de/apis/fake/todos/user/${newUser}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify([]),
+      }
+    );
+
+    if (userResponse.ok) {
+      setCreateUserSucces(true);
+    } else {
+      setCreateUserSucces(false);
+    }
+  };
+  const handleNewTask = (e) => {
+    e.preventDefault();
+    if (inputText.trim() == " ") return;
+    const newItem = {
+      text: `${inputText}`,
+      label: "Add a Task",
+      done: false,
+      id: (Math.random() * 20).toFixed(1),
+    };
+    setItems([...items, newItem]);
+    setInputText(" ");
+    console.log(items);
+
+  };
+
+  const createUser = async (newUser) => {
+    setSentUser(true);
+    let userResponse = await fetch(
+      `https://assets.breatheco.de/apis/fake/todos/user/${newUser}`,
       {
         method: "POST",
         headers: {
@@ -206,12 +245,13 @@ function TodoListApp() {
     setSentDelete(true);
 
     let deleteResponse = await fetch(
-      `http://assets.breatheco.de/apis/fake/todos/user/${newUser}`,
+      `https://assets.breatheco.de/apis/fake/todos/user/${newUser}`,
       {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify([]),
       }
     );
 
@@ -225,7 +265,7 @@ function TodoListApp() {
   return (
     <div>
       <nav>
-        <button className="home-button btn btn-secondary">Some button</button>
+        {/* <button className="home-button btn btn-secondary">Some button</button> */}
       </nav>
       <main>
         <h1>To Do List</h1>
@@ -250,20 +290,22 @@ function TodoListApp() {
           <input
             className="app-input"
             onChange={updateText}
-            value={inputText}
             type="text"
             id="task-input"
             placeholder="No tasks, Add a task!"
           />
+
           <button
             className="app-submit"
             onClick={handleNewTask}
-            //title="Add task"
+            title="Add task"
           >
             <i className="fas fa-plus" />
           </button>
-        </form> */}
-        {/* <Home listOfTasks={tasks} /> */}
+
+        </form>
+        {/* <Home listOfTasks={items} onDelete={setErase} /> */}
+
         {/* <input className="app-input" placeholder="New User..." />
         <button className="btn btn-danger" onClick={handleOpenUser}>
           Load User
@@ -272,7 +314,11 @@ function TodoListApp() {
         <input
           className="app-input"
           placeholder="New User..."
-          onChange={(e) => setUser(e.target.value)}
+
+          onChange={(e) => {
+            setUser(e.target.value);
+          }}
+
         />
         <div>{"user:" + user}</div>
 
@@ -289,11 +335,13 @@ function TodoListApp() {
           <div>
             {createUserSucces ? (
               <div className="alert alert-success" role="alert">
-                User created successfully!
+
+                User Succesfully Created!
               </div>
             ) : (
               <div className="alert alert-danger" role="alert">
-                User not created!
+                User not created! User Name Already in Use!
+
               </div>
             )}
           </div>
@@ -318,12 +366,16 @@ function TodoListApp() {
               </div>
             ) : (
               <div className="alert alert-danger" role="alert">
-                User not deleted!
+
+                User not deleted or Unexsistant User Id (User has already been
+                deleted!)
+
               </div>
             )}
           </div>
         )}
       </main>
+      <br />
       <footer>
         <p>Made with ❤️ by 4Geeks Team</p>
       </footer>
